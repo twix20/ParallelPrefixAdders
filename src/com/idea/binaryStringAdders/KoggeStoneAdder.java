@@ -6,6 +6,7 @@ public class KoggeStoneAdder extends PrefixAdderBase {
     @Override
     public void insertNodeByPosition(int globalPosition, int position, int stage, int gapSize, Node parent) {
         int depth = meshNodes.getDepth();
+
         if(stage <= depth && gapSize <= position){ // Create Yellow Circles
             int prevParentPosition = parent.getPosition() - gapSize;
             Node prevParent = meshNodes.getNodeByPosition(prevParentPosition);

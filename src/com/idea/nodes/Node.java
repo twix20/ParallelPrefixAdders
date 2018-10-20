@@ -27,7 +27,7 @@ public abstract class Node  {
         return this.getResult() != null;
     }
 
-    public synchronized void tryToComputeResult(){
+    public void tryToComputeResult(){
 
         //Check if result has already been computed
         if(isComputed())
@@ -40,13 +40,31 @@ public abstract class Node  {
 
         computeResult();
 
-        computeChildren();
+        try {
+            computeChildren();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void computeChildren(){
-        getChildren().parallelStream().forEach((node) -> {
+    public void computeChildren() throws InterruptedException {
+        List<Thread> threads = new ArrayList<>();
+
+        for(Node node : getChildren()) {
             node.tryToComputeResult();
-        });
+            //Thread t = new Thread(() -> node.tryToComputeResult());
+            //t.start();
+
+            //threads.add(t);
+        }
+
+        //for(Thread thread: threads) {
+        //    try {
+        //        thread.join();
+        //    } catch (InterruptedException e) {
+        //        e.printStackTrace();
+        //    }
+        //}
     }
 
 

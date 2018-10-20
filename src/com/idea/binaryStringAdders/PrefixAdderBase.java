@@ -5,6 +5,7 @@ import com.idea.arithmetic.Bit;
 import com.idea.arithmetic.IBinaryStringAdder;
 import com.idea.nodes.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PrefixAdderBase implements IBinaryStringAdder {
@@ -12,22 +13,32 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
 
     public abstract void insertNodeByPosition(int globalPosition, int position, int stage, int gapSize, Node parent);
 
-    public BinaryString add(BinaryString a, BinaryString b){
+    public void add(BinaryString a, BinaryString b){
         if(meshNodes == null)
-            generateMesh(a, b);
+           generateMesh(a, b);
 
         // Perform add
+        List<Thread> threads = new ArrayList<>();
         List<Node> firstStageNodes = meshNodes.getMeshNodesByStage(0);
-        firstStageNodes.parallelStream().forEach((node) -> {
-            //try {
-            //    Thread.sleep(500);
-            //} catch (InterruptedException e) {
-            //    // TODO Auto-generated catch block
-            //    e.printStackTrace();
-            //}
+        for(Node node : firstStageNodes) {
             node.tryToComputeResult();
-        });
+            //Thread t = new Thread(() -> node.tryToComputeResult());
+            //t.start();
 
+            //threads.add(t);
+        }
+
+        //for(Thread thread: threads) {
+        //    try {
+        //        thread.join();
+        //    } catch (InterruptedException e) {
+        //        e.printStackTrace();
+        //    }
+        //}
+
+    }
+
+    public BinaryString getResult(){
         // Gather result
         List<ResultNode> allResultNodes = meshNodes.getResultMeshNodes();
         String sum = "";
@@ -36,7 +47,6 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
 
             sum += Bit.getValue(n.getResult().getSum());
         }
-
         return new BinaryString(sum);
     }
 

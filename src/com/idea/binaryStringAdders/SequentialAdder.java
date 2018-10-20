@@ -4,23 +4,28 @@ import com.idea.arithmetic.BinaryString;
 import com.idea.arithmetic.IBinaryStringAdder;
 
 public class SequentialAdder implements IBinaryStringAdder {
-    @Override
-    public BinaryString add(BinaryString a, BinaryString b) {
 
+    String result;
+
+    @Override
+    public void add(BinaryString a, BinaryString b) {
         int desiredLength = calculateLongerLength(a, b) + 1;
 
         a = leftPadWithZeros(a, desiredLength);
         b = leftPadWithZeros(b, desiredLength);
 
-        String result = addBitStrings(a, b);
+        result = addBitStrings(a, b);
+    }
 
+    @Override
+    public BinaryString getResult() {
         return new BinaryString(result);
     }
 
     // The main function that adds two bit sequences and returns the addition
     private String addBitStrings(BinaryString first, BinaryString second )
     {
-        String result = "";  // To store the sum bits
+        result = "";  // To store the sum bits
 
         int carry = 0;  // Initialize carry
         int length = first.length();
