@@ -1,13 +1,14 @@
-package com.idea.prefixAdders;
+package com.idea.binaryStringAdders;
 
 import com.idea.nodes.Node;
 
-public class KoggeStoneAdder extends PrefixAdderBase {
+public class LadnerFischerAdder extends PrefixAdderBase {
     @Override
     public void insertNodeByPosition(int globalPosition, int position, int stage, int gapSize, Node parent) {
         int depth = meshNodes.getDepth();
-        if(stage <= depth && gapSize <= position){ // Create Yellow Circles
-            int prevParentPosition = parent.getPosition() - gapSize;
+
+        if(stage <= depth && gapSize <= position % (gapSize*2)){ // Create Yellow Circles
+            int prevParentPosition = parent.getPosition() - (position % gapSize) - 1;
             Node prevParent = meshNodes.getNodeByPosition(prevParentPosition);
 
             addWorkerNode(stage, globalPosition, parent, prevParent);

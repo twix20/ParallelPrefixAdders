@@ -1,4 +1,4 @@
-package com.idea.prefixAdders;
+package com.idea.binaryStringAdders;
 
 import com.idea.arithmetic.BinaryString;
 import com.idea.nodes.Node;
