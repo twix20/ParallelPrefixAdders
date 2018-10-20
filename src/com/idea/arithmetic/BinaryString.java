@@ -11,8 +11,8 @@ public class BinaryString {
         return originalString.length();
     }
 
-    public char charAt(int index){
-        return originalString.charAt(index);
+    public Bit bitAt(int index){
+        return originalString.charAt(index) == '1' ? Bit.One : Bit.Zero;
     }
 
     private boolean isValid(){

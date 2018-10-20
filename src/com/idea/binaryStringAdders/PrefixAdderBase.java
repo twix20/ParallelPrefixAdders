@@ -59,8 +59,8 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
                 parent = meshNodes.getNodeByPosition(parentPosition);
 
                 if(stage == 0){ // Create Red Squares
-                    Bit aBit = Bit.values()[Character.getNumericValue(sA.charAt(sA.length() - 1 - pos))];
-                    Bit bBit = Bit.values()[Character.getNumericValue(sB.charAt(sB.length() - 1 - pos))];
+                    Bit aBit = sA.bitAt(sA.length() - 1 - pos);
+                    Bit bBit = sB.bitAt(sB.length() - 1 - pos);
                     this.addInitialNode(stage, posCounter, aBit, bBit);
                 }
                 else if(stage == depth + 1) { //Create Yellow and Green circles

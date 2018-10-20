@@ -1,6 +1,8 @@
 package com.idea.binaryStringAdders;
 
 import com.idea.arithmetic.BinaryString;
+import com.idea.arithmetic.Bit;
+import com.idea.arithmetic.BitCalculator;
 import com.idea.arithmetic.IBinaryStringAdder;
 
 public class SequentialAdder implements IBinaryStringAdder {
@@ -22,26 +24,28 @@ public class SequentialAdder implements IBinaryStringAdder {
     {
         String result = "";  // To store the sum bits
 
-        int carry = 0;  // Initialize carry
+        Bit carry = Bit.Zero;  // Initialize carry
         int length = first.length();
 
         // Add all bits one by one
         for (int i = length - 1 ; i >= 0 ; i--)
         {
-            int firstBit = first.charAt(i) - '0';
-            int secondBit = second.charAt(i) - '0';
+            Bit firstBit = first.bitAt(i);
+            Bit secondBit = second.bitAt(i);
 
             // boolean expression for sum of 3 bits
-            int sum = (firstBit ^ secondBit ^ carry)+'0';
+            Bit sum = BitCalculator.xor(firstBit, secondBit);
+            sum = BitCalculator.xor(sum, carry);
 
-            result = (char)sum + result;
+            result = Bit.getValue(sum) + result;
 
             // boolean expression for 3-bit addition
-            carry = (firstBit & secondBit) | (secondBit & carry) | (firstBit & carry);
+            Bit temp = BitCalculator.or(BitCalculator.and(firstBit, secondBit), BitCalculator.and(secondBit, carry));
+            carry = BitCalculator.or(temp, BitCalculator.and(firstBit, carry));
         }
 
         // if overflow, then add a leading 1
-        if (carry == 1)
+        if (carry == Bit.One)
             result = '1' + result;
 
         return result;
