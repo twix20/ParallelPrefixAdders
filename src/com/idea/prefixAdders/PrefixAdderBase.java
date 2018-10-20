@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class PrefixAdderBase implements IPrefixAdder {
     protected int depth;
@@ -119,13 +120,10 @@ public abstract class PrefixAdderBase implements IPrefixAdder {
     }
 
     public List<ResultNode> getResultMeshNodes(){
-        List<ResultNode> nodes = new ArrayList<>();
-
-        for(Node n: meshNodes.values())
-            if(n.getStage() == depth + 1)
-                nodes.add((ResultNode)n);
-
-        return nodes;
+        return getMeshNodesByStage(depth + 1)
+                .stream()
+                .map(n -> (ResultNode)n)
+                .collect(Collectors.toList());
     }
 
     protected void addInitialNode(int stage, int pos, Bit aBit, Bit bBit){
