@@ -31,11 +31,11 @@ public class ResultNode extends Node {
 
     @Override
     public String toString(){
-        int prevParentIndexIfExists = getPrevParent() == null ? -1 : getPrevParent().getIndex();
+        int prevParentPositionIfExists = getPrevParent() == null ? -1 : getPrevParent().getPosition();
 
         return String.format("|{%1$d}{%2$d} C:%3$s S:%4$s T:%5$s| ",
-                getIndex(),
-                prevParentIndexIfExists,
+                getPosition(),
+                prevParentPositionIfExists,
                 getResult().getGeneration(),
                 getResult().getSum(),
                 getNodeName());

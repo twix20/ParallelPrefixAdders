@@ -7,7 +7,6 @@ import com.idea.prefixAdders.LadnerFischerAdder;
 public class Main {
 
     public static void main(String[] args) {
-	    // write your code here
         //IBinaryStringAdder adder = new KoggeStoneAdder();
         IBinaryStringAdder adder = new LadnerFischerAdder();
 

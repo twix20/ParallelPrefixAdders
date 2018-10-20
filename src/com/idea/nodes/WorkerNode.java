@@ -6,8 +6,8 @@ import com.idea.arithmetic.BitCalculator;
 //Yellow circle
 public class WorkerNode extends Node{
 
-    public WorkerNode(int stage, int index) {
-        super(stage, index);
+    public WorkerNode(int stage, int position) {
+        super(stage, position);
     }
 
     @Override

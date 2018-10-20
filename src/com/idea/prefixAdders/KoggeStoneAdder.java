@@ -4,10 +4,11 @@ import com.idea.nodes.Node;
 
 public class KoggeStoneAdder extends PrefixAdderBase {
     @Override
-    public void insertNodeByPosition(int globalPosition, int index, int stage, int gapSize, Node parent) {
-        if(stage <= depth && gapSize <= index){ // Create Yellow Circles
-            int prevParentPosition = parent.getIndex() - gapSize;
-            Node prevParent = getNodeByPosition(prevParentPosition);
+    public void insertNodeByPosition(int globalPosition, int position, int stage, int gapSize, Node parent) {
+        int depth = meshNodes.getDepth();
+        if(stage <= depth && gapSize <= position){ // Create Yellow Circles
+            int prevParentPosition = parent.getPosition() - gapSize;
+            Node prevParent = meshNodes.getNodeByPosition(prevParentPosition);
 
             addWorkerNode(stage, globalPosition, parent, prevParent);
         }

@@ -3,8 +3,8 @@ package com.idea.nodes;
 //Green node
 public class HangingNode extends Node{
 
-    public HangingNode(int stage, int index) {
-        super(stage, index);
+    public HangingNode(int stage, int position) {
+        super(stage, position);
     }
 
     @Override

@@ -5,23 +5,18 @@ import com.idea.arithmetic.Bit;
 import com.idea.arithmetic.IBinaryStringAdder;
 import com.idea.nodes.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public abstract class PrefixAdderBase implements IBinaryStringAdder {
-    protected int depth;
-    protected Map<Integer, Node> meshNodes = new HashMap<>();
+    protected MeshNodes meshNodes;
 
-    public abstract void insertNodeByPosition(int globalPosition, int index, int stage, int gapSize, Node parent);
+    public abstract void insertNodeByPosition(int globalPosition, int position, int stage, int gapSize, Node parent);
 
     public BinaryString add(BinaryString a, BinaryString b){
         generateMesh(a, b);
 
         // Perform add
-        List<Node> firstStageNodes = getMeshNodesByStage(0);
+        List<Node> firstStageNodes = meshNodes.getMeshNodesByStage(0);
         firstStageNodes.parallelStream().forEach((node) -> {
             //try {
             //    Thread.sleep(500);
@@ -33,7 +28,7 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
         });
 
         // Gather result
-        List<ResultNode> allResultNodes = getResultMeshNodes();
+        List<ResultNode> allResultNodes = meshNodes.getResultMeshNodes();
         String sum = "";
         for(int i = allResultNodes.size() - 1; i >= 0; i--){
             ResultNode n = allResultNodes.get(i);
@@ -45,86 +40,47 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
     }
 
     private void generateMesh(BinaryString sA, BinaryString sB){
-        int indexCounter = 0;
+        meshNodes = new MeshNodes(sA, sB);
 
-        depth = calculateMeshDepth(sA, sB);
-        int length = getLongerLength(sA, sB) + 1;
+        int length = meshNodes.getLongerLength() + 1;
+        int depth = meshNodes.getDepth();
 
         sA = alignBinaryString(sA, length);
         sB = alignBinaryString(sB, length);
 
+        int posCounter = 0;
         for(int stage = 0; stage <= depth + 1; stage++){ // Iterate stages
             int gapSize = (int)Math.pow(2, stage - 1);
 
             for(int pos = 0; pos < length; pos++) { // Iterate stage positions
                 Node parent;
-                int parentPosition = indexCounter - length;
-                parent = getNodeByPosition(parentPosition);
+                int parentPosition = posCounter - length;
+                parent = meshNodes.getNodeByPosition(parentPosition);
 
                 if(stage == 0){ // Create Red Squares
                     Bit aBit = Bit.values()[Character.getNumericValue(sA.charAt(sA.length() - 1 - pos))];
                     Bit bBit = Bit.values()[Character.getNumericValue(sB.charAt(sB.length() - 1 - pos))];
-                    this.addInitialNode(stage, indexCounter, aBit, bBit);
+                    this.addInitialNode(stage, posCounter, aBit, bBit);
                 }
                 else if(stage == depth + 1) { //Create Yellow and Green circles
 
-                    this.addResultNode(stage, indexCounter, parent);
+                    this.addResultNode(stage, posCounter, parent);
                 }
                 else {
-                    this.insertNodeByPosition(indexCounter, pos, stage, gapSize, parent);
+                    this.insertNodeByPosition(posCounter, pos, stage, gapSize, parent);
                 }
 
-                indexCounter++;
+                posCounter++;
             }
         }
     }
 
-    private int calculateMeshDepth(BinaryString sA, BinaryString sB){
-        int longerLength = getLongerLength(sA, sB);
-
-        return closestNextPowerOfTwo(longerLength);
-    }
-
-    private int getLongerLength(BinaryString sA, BinaryString sB){
-        return Integer.max(sA.length(), sB.length());
-    }
-
-    private int closestNextPowerOfTwo(int a) {
-        return Integer.BYTES * 8 - Integer.numberOfLeadingZeros(a - 1);
-    }
-
-    public BinaryString alignBinaryString(BinaryString stringToPad, int padToLength){
+    private BinaryString alignBinaryString(BinaryString stringToPad, int padToLength){
         if(stringToPad.length() < padToLength) {
             String paddedString = String.format("%0" + String.valueOf(padToLength - stringToPad.length()) + "d%s",0,stringToPad.toString());
             stringToPad = new BinaryString(paddedString);
         }
         return stringToPad;
-    }
-
-    public Node getNodeByPosition(int pos){
-        if(meshNodes.containsKey(pos))
-            return meshNodes.get(pos);
-
-        return null;
-    }
-
-    public List<Node> getMeshNodesByStage(int stage){
-        List<Node> nodesAtStage = new ArrayList<>();
-
-        for (Node n : meshNodes.values()) {
-            if(n.getStage() == stage){
-                nodesAtStage.add(n);
-            }
-        }
-
-        return nodesAtStage;
-    }
-
-    public List<ResultNode> getResultMeshNodes(){
-        return getMeshNodesByStage(depth + 1)
-                .stream()
-                .map(n -> (ResultNode)n)
-                .collect(Collectors.toList());
     }
 
     protected void addInitialNode(int stage, int pos, Bit aBit, Bit bBit){
@@ -133,7 +89,7 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
         nodeToInsert.setB(bBit);
         nodeToInsert.setRootParent(nodeToInsert);
 
-        meshNodes.put(nodeToInsert.getIndex(), nodeToInsert);
+        meshNodes.insertNode(nodeToInsert);
     }
     protected void addWorkerNode(int stage, int pos, Node parent, Node prevParent){
         Node nodeToInsert = new WorkerNode(stage, pos);
@@ -144,7 +100,7 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
         parent.addChild(nodeToInsert);
         prevParent.addChild(nodeToInsert);
 
-        meshNodes.put(nodeToInsert.getIndex(), nodeToInsert);
+        meshNodes.insertNode(nodeToInsert);
     }
     protected void addHangingNode(int stage, int pos, Node parent){
         Node nodeToInsert = new HangingNode(stage, pos);
@@ -152,10 +108,11 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
         nodeToInsert.setParent(parent);
 
         parent.addChild(nodeToInsert);
-        meshNodes.put(nodeToInsert.getIndex(), nodeToInsert);
+
+        meshNodes.insertNode(nodeToInsert);
     }
     protected void addResultNode(int stage, int pos, Node parent){
-        Node prevNode = getNodeByPosition(pos - 1);
+        Node prevNode = meshNodes.getNodeByPosition(pos - 1);
         ResultNode prevResultNode = prevNode instanceof ResultNode ? (ResultNode)prevNode : ResultNode.FAKE_NODE;
 
         Node nodeToInsert = new ResultNode(stage, pos, prevResultNode);
@@ -165,6 +122,6 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
         prevResultNode.addChild(nodeToInsert);
         parent.addChild(nodeToInsert);
 
-        meshNodes.put(nodeToInsert.getIndex(), nodeToInsert);
+        meshNodes.insertNode(nodeToInsert);
     }
 }

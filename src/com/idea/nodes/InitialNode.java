@@ -6,8 +6,8 @@ import com.idea.arithmetic.BitCalculator;
 //Red node
 public class InitialNode extends Node{
 
-    public InitialNode(int stage, int index) {
-        super(stage, index);
+    public InitialNode(int stage, int position) {
+        super(stage, position);
     }
 
     @Override

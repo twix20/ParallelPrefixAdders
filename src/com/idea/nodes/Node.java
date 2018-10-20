@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Node  {
-    private int stage, index;
+    private int stage, position;
     private Node rootParent;
     private Node parent;
     private Node prevParent;
@@ -14,11 +14,11 @@ public abstract class Node  {
     private NodeComputingResult result;
     private Bit a, b;
 
-    public Node(int stage, int index){
+    public Node(int stage, int position){
         this.children = new ArrayList<Node>();
 
         this.stage = stage;
-        this.index = index;
+        this.position = position;
     }
 
     public abstract void computeResult();
@@ -61,10 +61,10 @@ public abstract class Node  {
     @Override
     public String toString(){
 
-        int prevParentPos = getPrevParent() == null ? -1 : getPrevParent().getIndex();
+        int prevParentPos = getPrevParent() == null ? -1 : getPrevParent().getPosition();
 
         return String.format("|{%1$d}{%2$d} P:%3$s G:%4$s T:%5$s| ",
-                getIndex(),
+                getPosition(),
                 prevParentPos,
                 getResult().getPropagation(),
                 getResult().getGeneration(),
@@ -88,8 +88,8 @@ public abstract class Node  {
         return stage;
     }
 
-    public int getIndex() {
-        return index;
+    public int getPosition() {
+        return position;
     }
 
     public Node getRootParent() {

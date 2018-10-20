@@ -4,10 +4,12 @@ import com.idea.nodes.Node;
 
 public class LadnerFischerAdder extends PrefixAdderBase {
     @Override
-    public void insertNodeByPosition(int globalPosition, int index, int stage, int gapSize, Node parent) {
-        if(stage <= depth && gapSize <= index % (gapSize*2)){ // Create Yellow Circles
-            int prevParentPosition = parent.getIndex() - (index % gapSize) - 1;
-            Node prevParent = getNodeByPosition(prevParentPosition);
+    public void insertNodeByPosition(int globalPosition, int position, int stage, int gapSize, Node parent) {
+        int depth = meshNodes.getDepth();
+
+        if(stage <= depth && gapSize <= position % (gapSize*2)){ // Create Yellow Circles
+            int prevParentPosition = parent.getPosition() - (position % gapSize) - 1;
+            Node prevParent = meshNodes.getNodeByPosition(prevParentPosition);
 
             addWorkerNode(stage, globalPosition, parent, prevParent);
         }
