@@ -4,11 +4,11 @@ import com.idea.arithmetic.Bit;
 import com.idea.arithmetic.BitCalculator;
 
 public class ResultNode extends Node {
-    //public static ResultNode FAKE_NODE;
-    //static {
-    //    FAKE_NODE = new ResultNode(-1, -1, null, null);
-    //   FAKE_NODE.setResult(new NodeComputingResult(Bit.Zero, Bit.Zero));
-    //}
+    public static ResultNode FAKE_NODE;
+    static {
+        FAKE_NODE = new ResultNode(-1, -1, null);
+       FAKE_NODE.setResult(new NodeComputingResult(Bit.Zero, Bit.Zero));
+    }
 
     public ResultNode(int stage, int postion, ResultNode prevParent) {
         super(stage, postion);

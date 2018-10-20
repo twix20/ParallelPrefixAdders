@@ -27,7 +27,7 @@ public abstract class Node  {
         return this.getResult() != null;
     }
 
-    public void tryToComputeResult(){
+    public synchronized void tryToComputeResult(){
 
         //Check if result has already been computed
         if(isComputed())
@@ -54,6 +54,11 @@ public abstract class Node  {
         return this.getClass().getName();
     }
 
+    public void addChild(Node child){
+        this.children.add(child);
+    }
+
+    @Override
     public String toString(){
 
         int prevParentPos = getPrevParent() == null ? -1 : getPrevParent().getIndex();

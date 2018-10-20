@@ -2,5 +2,9 @@ package com.idea.arithmetic;
 
 public enum Bit {
     Zero,
-    One
+    One;
+
+    public static int getValue(Bit b){
+        return b == Zero ? 0 : 1;
+    }
 }
