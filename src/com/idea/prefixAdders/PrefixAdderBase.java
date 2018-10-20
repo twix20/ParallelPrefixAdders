@@ -2,6 +2,7 @@ package com.idea.prefixAdders;
 
 import com.idea.arithmetic.BinaryString;
 import com.idea.arithmetic.Bit;
+import com.idea.arithmetic.IBinaryStringAdder;
 import com.idea.nodes.*;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class PrefixAdderBase implements IPrefixAdder {
+public abstract class PrefixAdderBase implements IBinaryStringAdder {
     protected int depth;
     protected Map<Integer, Node> meshNodes = new HashMap<>();
 

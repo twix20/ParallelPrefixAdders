@@ -1,16 +1,15 @@
 package com.idea;
 
 import com.idea.arithmetic.BinaryString;
-import com.idea.prefixAdders.IPrefixAdder;
-import com.idea.prefixAdders.KoggeStoneAdder;
+import com.idea.arithmetic.IBinaryStringAdder;
 import com.idea.prefixAdders.LadnerFischerAdder;
 
 public class Main {
 
     public static void main(String[] args) {
 	    // write your code here
-        //IPrefixAdder adder = new KoggeStoneAdder();
-        IPrefixAdder adder = new LadnerFischerAdder();
+        //IBinaryStringAdder adder = new KoggeStoneAdder();
+        IBinaryStringAdder adder = new LadnerFischerAdder();
 
         BinaryString a = new BinaryString("00011111111100001111111111000000111111111111111000000000000001111111111111111100000000000000010101111111111111000000000000000000000000000000000000000000000000000111111111111111111111111111111111111111111111111111");
         BinaryString b = new BinaryString("111111111111111111100001111111100011111111111111110000000111111111110101010101010101010101010111111111111111101010101111111111111011111111111111111111111111000000000000000000000000000000000000000000000000000");
