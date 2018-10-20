@@ -13,7 +13,8 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
     public abstract void insertNodeByPosition(int globalPosition, int position, int stage, int gapSize, Node parent);
 
     public BinaryString add(BinaryString a, BinaryString b){
-        generateMesh(a, b);
+        if(meshNodes == null)
+            generateMesh(a, b);
 
         // Perform add
         List<Node> firstStageNodes = meshNodes.getMeshNodesByStage(0);
@@ -39,7 +40,7 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
         return new BinaryString(sum);
     }
 
-    private void generateMesh(BinaryString sA, BinaryString sB){
+    public void generateMesh(BinaryString sA, BinaryString sB){
         meshNodes = new MeshNodes(sA, sB);
 
         int length = meshNodes.getLongerLength() + 1;
