@@ -2,7 +2,14 @@ package com.idea.binaryStringAdders;
 
 import com.idea.nodes.Node;
 
+import java.util.concurrent.ExecutorService;
+
 public class LadnerFischerAdder extends PrefixAdderBase {
+
+    public LadnerFischerAdder(ExecutorService executorService) {
+        super(executorService);
+    }
+
     @Override
     public void insertNodeByPosition(int globalPosition, int position, int stage, int gapSize, Node parent) {
         int depth = meshNodes.getDepth();

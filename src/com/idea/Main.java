@@ -5,6 +5,9 @@ import com.idea.binaryStringAdders.KoggeStoneAdder;
 import com.idea.binaryStringAdders.LadnerFischerAdder;
 import com.idea.binaryStringAdders.SequentialAdder;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -13,16 +16,21 @@ public class Main {
         BinaryString a = new BinaryString("001111111111000000000000000111111111111111111110000000000000000000000001111110000000111111");
         BinaryString b = new BinaryString("0111111100000011111101011111010110000000000000000000000000000011111111111101011111111110001110");
 
-        KoggeStoneAdder koggeStoneAdder = new KoggeStoneAdder();
-        LadnerFischerAdder ladnerFischerAdder = new LadnerFischerAdder();
+        ExecutorService executorService = Executors.newFixedThreadPool(3000);
+
+        KoggeStoneAdder koggeStoneAdder = new KoggeStoneAdder(executorService);
+        LadnerFischerAdder ladnerFischerAdder = new LadnerFischerAdder(executorService);
         SequentialAdder sequentialAdder = new SequentialAdder();
 
         koggeStoneAdder.generateMesh(a, b);
         ladnerFischerAdder.generateMesh(a, b);
 
         System.out.println(koggeStoneAdder.add(a, b));
-        System.out.println(ladnerFischerAdder.add(a, b));
-        System.out.println(sequentialAdder.add(a, b));
+        System.out.println("after kogge: " + System.currentTimeMillis());
+//        System.out.println(ladnerFischerAdder.add(a, b));
+//        System.out.println(System.currentTimeMillis());
+//        System.out.println(sequentialAdder.add(a, b));
+//        System.out.println(System.currentTimeMillis());
     }
 
     // Binary to decimal: https://www.mathsisfun.com/binary-decimal-hexadecimal-converter.html

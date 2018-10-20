@@ -3,30 +3,45 @@ package com.idea.nodes;
 import com.idea.arithmetic.Bit;
 import com.idea.arithmetic.BitCalculator;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import static java.text.MessageFormat.format;
+
 public class ResultNode extends Node {
     public static ResultNode FAKE_NODE;
     static {
-        FAKE_NODE = new ResultNode(-1, -1, null);
+       FAKE_NODE = new ResultNode(Executors.newSingleThreadExecutor(), -1, -1, null);
        FAKE_NODE.setResult(new NodeComputingResult(Bit.Zero, Bit.Zero));
     }
 
-    public ResultNode(int stage, int postion, ResultNode prevParent) {
-        super(stage, postion);
+    public ResultNode(ExecutorService executorService, int stage, int postion, ResultNode prevParent) {
+        super(executorService, stage, postion);
 
         this.setPrevParent(prevParent);
     }
 
     @Override
-    public void computeResult() {
-        Bit previousCarry = this.getPrevParent().getResult().getGeneration(); // Previous result C-1
+    protected NodeComputingResult computeResultInternal() throws ComputingException {
+        Future<NodeComputingResult> previousParentFuture = getPrevParent().computeResult();
+        Future<NodeComputingResult> rootParentFuture = getRootParent().computeResult();
+        Future<NodeComputingResult> parentFuture = getParent().computeResult();
 
-        Bit rootParentPropagation = getRootParent().getResult().getPropagation();
-        Bit sum = BitCalculator.xor(rootParentPropagation, previousCarry);
+        try {
+            Bit previousCarry = previousParentFuture.get().getGeneration();
+            Bit rootParentPropagation = rootParentFuture.get().getPropagation();
+            Bit sum = BitCalculator.xor(rootParentPropagation, previousCarry);
 
-        NodeComputingResult result = new NodeComputingResult(Bit.Zero, getParent().getResult().getGeneration());
-        result.setSum(sum);
+            NodeComputingResult result = new NodeComputingResult(Bit.Zero, parentFuture.get().getGeneration());
+            result.setSum(sum);
 
-        this.setResult(result);
+            return result;
+        } catch (Exception e) {
+            throw new ComputingException(e);
+        }
+
     }
 
     @Override

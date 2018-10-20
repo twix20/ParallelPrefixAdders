@@ -3,21 +3,26 @@ package com.idea.nodes;
 import com.idea.arithmetic.Bit;
 import com.idea.arithmetic.BitCalculator;
 
+import java.util.concurrent.ExecutorService;
+
 //Red node
 public class InitialNode extends Node{
 
-    public InitialNode(int stage, int position) {
-        super(stage, position);
+    public InitialNode(ExecutorService executorService, int stage, int position) {
+        super(executorService, stage, position);
     }
 
     @Override
-    public void computeResult() {
+    protected NodeComputingResult computeResultInternal() {
 
-        Bit propagation = BitCalculator.xor(getA(), getB());
-        Bit generation = BitCalculator.and(getA(), getB());
+        // TODO Get real input data not "1" and "1"
 
-        NodeComputingResult result = new NodeComputingResult(propagation, generation);
+        Bit propagation = BitCalculator.xor(Bit.One, Bit.One);
+        Bit generation = BitCalculator.and(Bit.One, Bit.One);
 
-        this.setResult(result);
+        System.out.println("start: " + System.currentTimeMillis());
+
+        return new NodeComputingResult(propagation, generation);
     }
+
 }

@@ -1,7 +1,10 @@
 package com.idea.arithmetic;
 
+
 public class BitCalculator {
+
     public static Bit or(Bit a, Bit b){
+        // TODO Consider hardware delay simulation: TimeUnit.MICROSECONDS.sleep(50);
         return (a == Bit.One || b == Bit.One) ? Bit.One : Bit.Zero;
     }
 

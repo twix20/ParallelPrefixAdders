@@ -2,61 +2,51 @@ package com.idea.nodes;
 
 import com.idea.arithmetic.Bit;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
+import static java.text.MessageFormat.format;
 
 public abstract class Node  {
-    private int stage, position;
+    private int stage;
+    private int position;
+    private ExecutorService executor;
     private Node rootParent;
     private Node parent;
     private Node prevParent;
-    private List<Node> children;
     private NodeComputingResult result;
     private Bit a, b;
 
-    public Node(int stage, int position){
-        this.children = new ArrayList<Node>();
-
+    public Node(ExecutorService executor, int stage, int position){
+        this.executor = executor;
         this.stage = stage;
         this.position = position;
     }
 
-    public abstract void computeResult();
-
-    public boolean isComputed() {
-        return this.getResult() != null;
-    }
-
-    public synchronized void tryToComputeResult(){
-
-        //Check if result has already been computed
-        if(isComputed())
-        {
-            return;
+    private synchronized NodeComputingResult getComputedResult() throws ComputingException {
+        if(this.getResult() == null) {
+            this.setResult(this.computeResultInternal());
         }
 
-        // Check if all parents are computed to proceed
-        if(!areParentsComputed()) return;
-
-        computeResult();
-
-        computeChildren();
+        return this.getResult();
     }
 
-    public void computeChildren(){
-        getChildren().parallelStream().forEach((node) -> {
-            node.tryToComputeResult();
+    protected abstract NodeComputingResult computeResultInternal() throws ComputingException;
+
+    public final Future<NodeComputingResult> computeResult() {
+
+        return getExecutorService().submit(() -> {
+//            System.out.println(format("Submitted: {0} for {1}", Thread.currentThread().getId(), this.getClass().getSimpleName()));
+
+            return this.getComputedResult();
         });
     }
-
 
     public String getNodeName(){
         return this.getClass().getName();
     }
 
-    public void addChild(Node child){
-        this.children.add(child);
-    }
 
     @Override
     public String toString(){
@@ -69,18 +59,6 @@ public abstract class Node  {
                 getResult().getPropagation(),
                 getResult().getGeneration(),
                 getNodeName());
-    }
-
-    private Boolean areParentsComputed(){
-        if(parent != null && !parent.isComputed()){
-            return false;
-        }
-
-        if(prevParent != null && !prevParent.isComputed()){
-            return false;
-        }
-
-        return true;
     }
 
     //Getters and setters
@@ -102,10 +80,6 @@ public abstract class Node  {
 
     public Node getPrevParent() {
         return prevParent;
-    }
-
-    public List<Node> getChildren() {
-        return children;
     }
 
     public NodeComputingResult getResult() {
@@ -143,4 +117,6 @@ public abstract class Node  {
     public void setB(Bit b) {
         this.b = b;
     }
+
+    protected ExecutorService getExecutorService() { return executor; }
 }
