@@ -55,7 +55,7 @@ public abstract class Node  {
     }
 
     public String getNodeName(){
-        return this.getClass().getName();
+        return this.getClass().getSimpleName();
     }
 
     public Node getParent() {
@@ -68,13 +68,12 @@ public abstract class Node  {
     @Override
     public String toString(){
 
-        int prevParentPos = getPrevParent() == null ? -1 : getPrevParent().getPosition();
-
-        return String.format("|{%1$d}{%2$d} P:%3$s G:%4$s T:%5$s| ",
+        return String.format("|{%1$d}{%2$d}{%3$d}P:%4$s G:%5$s T:%6$s| ",
                 getPosition(),
-                prevParentPos,
-                getResult().getPropagation(),
-                getResult().getGeneration(),
+                getParentPosition(),
+                getPrevParentPosition(),
+                getResult() == null ? "" : getResult().getPropagation(),
+                getResult() == null ? "" : getResult().getGeneration(),
                 getNodeName());
     }
 

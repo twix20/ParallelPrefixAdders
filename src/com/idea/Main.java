@@ -2,7 +2,11 @@ package com.idea;
 
 import com.idea.arithmetic.BinaryString;
 import com.idea.binaryStringAdders.*;
+import com.idea.nodes.Node;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,8 +20,22 @@ public class Main {
 
         ExecutorService executorService = Executors.newFixedThreadPool(3000);
 
-        PrefixAdderSolver koggeStoneSolver = new PrefixAdderSolver(new KoggeStoneMeshNodes(executorService, a, b));
+        KoggeStoneMeshNodes mesh = new KoggeStoneMeshNodes(executorService, a ,b);
+        PrefixAdderSolver koggeStoneSolver = new PrefixAdderSolver(mesh);
         BinaryString result = koggeStoneSolver.add(a, b);
+
+        for(int i = 0; i < 4; i++){
+            List<Node> nodesOnStage = mesh.getMeshNodesByStage(i);
+
+            Collections.sort(nodesOnStage, new Comparator<Node>(){
+                public int compare(Node s1, Node s2) {
+                    return s1.getPosition() > s2.getPosition() ? -1 : 1;
+                }
+            });
+
+            nodesOnStage.stream().forEach(n -> System.out.print(n.toString() + " "));
+            System.out.println();
+        }
 
         System.out.println(result);
 

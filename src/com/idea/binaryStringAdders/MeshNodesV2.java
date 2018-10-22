@@ -30,8 +30,6 @@ public abstract class MeshNodesV2 {
 
         depth = calculateMeshDepth();
 
-        System.out.println("Depth: " + depth);
-
         for(int i = 0; i <= depth + 1; i++)
             meshByStage.put(i, new ArrayList<>());
 
@@ -43,12 +41,14 @@ public abstract class MeshNodesV2 {
 
     public void insertNode(Node n){
         int position = n.getPosition();
-        System.out.println(String.format("Inserting node %s at %d, parentPos: %d prevParentPos: %d", n.getNodeName(), n.getPosition(), n.getParentPosition(), n.getPrevParentPosition()));
+        int stage = calculateStageFromPosition(position);
+
+        //System.out.println(String.format("Inserting node %s Stage:%d", n.toString(), stage));
 
         meshByPosition.put(position, n);
 
-        int stage = calculateStageFromPosition(position);
         List<Node> nodesByStage = meshByStage.get(stage);
+        nodesByStage.removeIf(node -> node.getPosition() == position);
         nodesByStage.add(n);
     }
 
@@ -69,22 +69,24 @@ public abstract class MeshNodesV2 {
     }
 
     public List<ResultNode> getResultMeshNodes(){
-        return getMeshNodesByStage(getDepth() - 1)
+        return getMeshNodesByStage(getDepth() + 1)
                 .stream()
                 .map(n -> (ResultNode)n)
                 .collect(Collectors.toList());
     }
 
     private int calculateMeshDepth(){
-        return closestNextPowerOfTwo(getWidth()) + 1;
+        return closestNextPowerOfTwo(getWidth() - 1);
     }
 
     private void generateResultMeshNodes(){
-        int depth = getDepth() - 1;
+        int depth = getDepth() + 1;
         int meshWidth = getWidth();
 
         for(int i = 0; i < meshWidth; i++){
             int position = depth * meshWidth + i;
+
+            //System.out.println(position);
             Node node = createResultNode(position);
             insertNode(node);
         }
@@ -94,8 +96,8 @@ public abstract class MeshNodesV2 {
         int meshWidth = getWidth();
 
         for(int i = 0; i < meshWidth; i++){
-            Bit inputA = paddedStringA.bitAt(i);
-            Bit inputB = paddedStringB.bitAt(i);
+            Bit inputA = paddedStringA.bitAt(meshWidth - i - 1);
+            Bit inputB = paddedStringB.bitAt(meshWidth - i - 1);
 
             InitialNode initialNode = createInitialNode(i, inputA, inputB);
             insertNode(initialNode);
@@ -139,6 +141,7 @@ public abstract class MeshNodesV2 {
 
 
     protected InitialNode createInitialNode(int position, Bit aBit, Bit bBit){
+        //System.out.println(String.format("Creating initial node at %d with a:%s b:%s", position, aBit, bBit));
         return new InitialNode(this, executorService, position, aBit, bBit);
     }
     protected WorkerNode createWorkerNode(int position, int parentPosition, int prevParentPosition){
@@ -151,7 +154,6 @@ public abstract class MeshNodesV2 {
         int meshWidth = getWidth();
         int parentPosition = pos - meshWidth;
 
-
         if(pos %  meshWidth == 0){
             return new ResultNode(this, executorService, pos, parentPosition);
         }
@@ -160,4 +162,6 @@ public abstract class MeshNodesV2 {
             return new ResultNode(this, executorService, pos, parentPosition, prevResultNodePosition);
         }
     }
+
+
 }

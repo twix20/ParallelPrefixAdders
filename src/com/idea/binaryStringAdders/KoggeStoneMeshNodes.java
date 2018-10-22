@@ -13,13 +13,13 @@ public class KoggeStoneMeshNodes extends MeshNodesV2 {
 
     @Override
     public Node createNodeByPosition(int position) {
-        int depth = getDepth() - 1;
+        int depth = getDepth();
         int stage = calculateStageFromPosition(position);
         int gapSize = calculateGapSizeFromPosition(position);
         int meshWidth = getWidth();
 
         int parentPosition = position - meshWidth;
-        if(stage <= (depth) && gapSize <= position){// Create Yellow Circles
+        if(stage <= depth && (position - meshWidth * stage) >= gapSize ){// Create Yellow Circles
             int prevParentPosition = parentPosition - gapSize;
 
             return createWorkerNode(position, parentPosition, prevParentPosition);

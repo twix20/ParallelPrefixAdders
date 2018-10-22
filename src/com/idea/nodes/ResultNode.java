@@ -39,13 +39,13 @@ public class ResultNode extends Node {
 
     @Override
     public String toString(){
-        int prevParentPositionIfExists = getPrevParent() == null ? -1 : getPrevParent().getPosition();
 
-        return String.format("|{%1$d}{%2$d} C:%3$s S:%4$s T:%5$s| ",
+        return String.format("|{%d}{%d}{%d} C:%s S:%s T:%s| ",
                 getPosition(),
-                prevParentPositionIfExists,
-                getResult().getGeneration(),
-                getResult().getSum(),
+                getParentPosition(),
+                getPrevParentPosition(),
+                getResult() == null ? "U" : getResult().getGeneration(),
+                getResult() == null ? "U" : getResult().getSum(),
                 getNodeName());
     }
 
