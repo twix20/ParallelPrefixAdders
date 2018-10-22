@@ -13,7 +13,7 @@ public abstract class Node  {
     private int position;
     private NodeComputingResult result;
     private ExecutorService executor;
-    private MeshNodesV2 meshNodes;
+    protected MeshNodesV2 meshNodes;
     private int parentPosition;
     private int prevParentPosition;
     private Bit a, b;

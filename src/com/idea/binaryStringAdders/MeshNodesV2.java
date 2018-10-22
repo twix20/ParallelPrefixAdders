@@ -52,7 +52,7 @@ public abstract class MeshNodesV2 {
         nodesByStage.add(n);
     }
 
-    public Node getNodeByPosition(int pos){
+    public Node getNodeByPosition(int pos)  {
         if(meshByPosition.containsKey(pos)) {
             //System.out.println(String.format("Node at %d exists.", pos));
             return meshByPosition.get(pos);

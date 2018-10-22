@@ -23,18 +23,30 @@ public class ResultNode extends Node {
     @Override
     protected NodeComputingResult computeResultInternal() throws ComputingException {
         Future<NodeComputingResult> previousResultFuture = getPrevParentPosition() == -1 ? null : getPrevParent().computeResult();
+        Future<NodeComputingResult> rootParentFuture = getRootParent().computeResult();
         Future<NodeComputingResult> parentFuture = getParent().computeResult();
 
         try {
             Bit previousCarry = previousResultFuture == null ? Bit.Zero : previousResultFuture.get().getGeneration();
-            Bit parentPropagation = parentFuture.get().getPropagation();
-            Bit sum = BitCalculator.xor(parentPropagation, previousCarry);
+
+            Bit rootParentPropagation = rootParentFuture.get().getPropagation();
+            Bit sum = BitCalculator.xor(rootParentPropagation, previousCarry);
 
             return new NodeComputingResult(Bit.Zero, parentFuture.get().getGeneration(), sum);
         } catch (Exception e) {
             throw new ComputingException(e);
         }
 
+    }
+
+    private Node getRootParent(){
+        int position = this.getPosition();
+        int depth = meshNodes.getDepth();
+        int width = meshNodes.getWidth();
+
+        int rootParentPosition = position - (depth + 1) * width;
+
+        return meshNodes.getNodeByPosition(rootParentPosition);
     }
 
     @Override

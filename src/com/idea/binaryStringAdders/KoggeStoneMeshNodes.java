@@ -12,7 +12,7 @@ public class KoggeStoneMeshNodes extends MeshNodesV2 {
     }
 
     @Override
-    public Node createNodeByPosition(int position) {
+    public Node createNodeByPosition(int position)  {
         int depth = getDepth();
         int stage = calculateStageFromPosition(position);
         int gapSize = calculateGapSizeFromPosition(position);
