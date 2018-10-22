@@ -4,6 +4,7 @@ import com.idea.arithmetic.BinaryString;
 import com.idea.binaryStringAdders.*;
 import com.idea.nodes.Node;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -25,9 +26,18 @@ public class Main {
         PrefixAdderSolver ladnerFischerAdder = new PrefixAdderSolver(new LadnerFischerMeshNodes(executorService, a ,b));
         SequentialAdder sequentialAdder = new SequentialAdder();
 
-        //System.out.println(koggeStoneAdder.add(a, b));
-        System.out.println(ladnerFischerAdder.add(a, b));
-        //System.out.println(sequentialAdder.add(a, b));
+
+        BinaryString[] results = new BinaryString[] {
+            koggeStoneAdder.add(a, b),
+            ladnerFischerAdder.add(a, b),
+            sequentialAdder.add(a, b)
+        };
+
+        boolean allEqual = Arrays.stream(results).allMatch(s -> results[0].toString().equals(s.toString()));
+        System.out.println(allEqual);
+        for(BinaryString result : results){
+            System.out.println(result);
+        }
 
         executorService.shutdownNow();
     }
