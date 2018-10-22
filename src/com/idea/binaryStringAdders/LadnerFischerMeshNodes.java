@@ -20,7 +20,7 @@ public class LadnerFischerMeshNodes extends MeshNodesV2 {
         int parentPosition = position - meshWidth;
         int index = position - meshWidth * stage;
         if(stage <= depth && gapSize <= index % (gapSize * 2)){ // Create Yellow Circles
-            int prevParentPosition = parentPosition - (position % gapSize) - 1;
+            int prevParentPosition = parentPosition - (index % gapSize) - 1;
 
             return createWorkerNode(position, parentPosition, prevParentPosition);
         }
