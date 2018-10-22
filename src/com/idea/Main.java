@@ -15,36 +15,21 @@ public class Main {
     public static void main(String[] args) {
         System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "30000");
 
-        BinaryString a = new BinaryString("110");
-        BinaryString b = new BinaryString("11");
+        BinaryString a = new BinaryString("11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+        BinaryString b = new BinaryString("11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
 
         ExecutorService executorService = Executors.newFixedThreadPool(3000);
 
-        KoggeStoneMeshNodes mesh = new KoggeStoneMeshNodes(executorService, a ,b);
-        //LadnerFischerMeshNodes mesh = new LadnerFischerMeshNodes(executorService, a ,b);
 
-        PrefixAdderSolver koggeStoneSolver = new PrefixAdderSolver(mesh);
-        BinaryString result = koggeStoneSolver.add(a, b);
+        PrefixAdderSolver koggeStoneAdder = new PrefixAdderSolver(new KoggeStoneMeshNodes(executorService, a ,b));
+        PrefixAdderSolver ladnerFischerAdder = new PrefixAdderSolver(new LadnerFischerMeshNodes(executorService, a ,b));
+        SequentialAdder sequentialAdder = new SequentialAdder();
 
-        System.out.println(result);
+        System.out.println(koggeStoneAdder.add(a, b));
+        System.out.println(ladnerFischerAdder.add(a, b));
+        System.out.println(sequentialAdder.add(a, b));
 
         executorService.shutdownNow();
-
-
-
-        //KoggeStoneAdder koggeStoneAdder = new KoggeStoneAdder(executorService);
-        //LadnerFischerAdder ladnerFischerAdder = new LadnerFischerAdder(executorService);
-        //SequentialAdder sequentialAdder = new SequentialAdder();
-
-        //koggeStoneAdder.generateMesh(a, b);
-        //ladnerFischerAdder.generateMesh(a, b);
-
-        //System.out.println(koggeStoneAdder.add(a, b));
-        //System.out.println("after kogge: " + System.currentTimeMillis());
-//        System.out.println(ladnerFischerAdder.add(a, b));
-//        System.out.println(System.currentTimeMillis());
-//        System.out.println(sequentialAdder.add(a, b));
-//        System.out.println(System.currentTimeMillis());
     }
 
     // Binary to decimal: https://www.mathsisfun.com/binary-decimal-hexadecimal-converter.html

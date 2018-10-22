@@ -19,7 +19,7 @@ public abstract class MeshNodesV2 {
 
     // Position, Node
     protected Map<Integer, Node> meshByPosition = new HashMap<>();
-    protected Map<Integer, List<Node>> meshByStage = new HashMap<>();
+//    protected Map<Integer, List<Node>> meshByStage = new HashMap<>();
 
     public MeshNodesV2(ExecutorService executorService, BinaryString sA, BinaryString sB){
         int length = getLongerLength(sA, sB) + 1;
@@ -30,8 +30,8 @@ public abstract class MeshNodesV2 {
 
         depth = calculateMeshDepth();
 
-        for(int i = 0; i <= depth + 1; i++)
-            meshByStage.put(i, new ArrayList<>());
+//        for(int i = 0; i <= depth + 1; i++)
+//            meshByStage.put(i, new ArrayList<>());
 
         generateInitialMeshNodes();
         generateResultMeshNodes();
@@ -39,17 +39,17 @@ public abstract class MeshNodesV2 {
 
     public abstract Node createNodeByPosition(int position);
 
-    public void insertNode(Node n){
+    public synchronized void insertNode(Node n){
         int position = n.getPosition();
-        int stage = calculateStageFromPosition(position);
+//        int stage = calculateStageFromPosition(position);
 
         //System.out.println(String.format("Inserting node %s Stage:%d", n.toString(), stage));
 
         meshByPosition.put(position, n);
 
-        List<Node> nodesByStage = meshByStage.get(stage);
-        nodesByStage.removeIf(node -> node.getPosition() == position);
-        nodesByStage.add(n);
+//        List<Node> nodesByStage = meshByStage.get(stage);
+//        nodesByStage.removeIf(node -> node.getPosition() == position);
+//        nodesByStage.add(n);
     }
 
     public Node getNodeByPosition(int pos)  {
@@ -65,7 +65,16 @@ public abstract class MeshNodesV2 {
     }
 
     public List<Node> getMeshNodesByStage(int stage){
-        return meshByStage.get(stage);
+        int width = getWidth();
+
+        List<Node> nodesOnStage = new ArrayList<>();
+        for(int i = 0; i < width; i++){
+            int key = stage * width + i;
+            if(meshByPosition.containsKey(key))
+                nodesOnStage.add(meshByPosition.get(key));
+        }
+
+        return nodesOnStage;
     }
 
     public List<ResultNode> getResultMeshNodes(){

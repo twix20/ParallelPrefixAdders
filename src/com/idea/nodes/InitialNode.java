@@ -25,7 +25,7 @@ public class InitialNode extends Node{
         Bit propagation = BitCalculator.xor(a, b);
         Bit generation = BitCalculator.and(a, b);
 
-        System.out.println("start: " + System.currentTimeMillis());
+        //System.out.println("start: " + System.currentTimeMillis());
 
         return new NodeComputingResult(propagation, generation);
     }

@@ -88,7 +88,7 @@ public abstract class Node  {
         return position;
     }
 
-    public NodeComputingResult getResult() {
+    public synchronized NodeComputingResult getResult() {
         return result;
     }
 
