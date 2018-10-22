@@ -26,7 +26,7 @@ public class NodeComputingResult {
         return generation;
     }
 
-    public Bit getSum() {
+    public synchronized Bit getSum() {
         return sum;
     }
 }

@@ -27,9 +27,6 @@ public class PrefixAdderSolver implements IBinaryStringAdder {
         // Get final result futures
         List<Future<NodeComputingResult>> futures = allResultNodes.stream().map(ResultNode::computeResult).collect(Collectors.toList());
 
-
-        // TODO Provide input data to stage 0 nodes
-
         String result = futures.stream()
                 .map(this::getFutureResultUncheckException)
                 .map(NodeComputingResult::getSum)

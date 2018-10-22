@@ -15,16 +15,20 @@ public class Main {
     public static void main(String[] args) {
         System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "30000");
 
-        BinaryString a = new BinaryString("001111111111000000000000000111111111111111111110000000000000000000000001111110000000111111");
-        BinaryString b = new BinaryString("0111111100000011111101011111010110000000000000000000000000000011111111111101011111111110001110");
+        BinaryString a = new BinaryString("110");
+        BinaryString b = new BinaryString("11");
 
         ExecutorService executorService = Executors.newFixedThreadPool(3000);
 
         KoggeStoneMeshNodes mesh = new KoggeStoneMeshNodes(executorService, a ,b);
+        //LadnerFischerMeshNodes mesh = new LadnerFischerMeshNodes(executorService, a ,b);
+
         PrefixAdderSolver koggeStoneSolver = new PrefixAdderSolver(mesh);
         BinaryString result = koggeStoneSolver.add(a, b);
 
         System.out.println(result);
+
+        executorService.shutdownNow();
 
 
 

@@ -10,6 +10,8 @@ import java.util.concurrent.Future;
 import static java.text.MessageFormat.format;
 
 public abstract class Node  {
+    protected Object lock = new Object();
+
     private int position;
     private NodeComputingResult result;
     private ExecutorService executor;
@@ -36,8 +38,12 @@ public abstract class Node  {
 
 
     private synchronized NodeComputingResult getComputedResult() throws ComputingException {
-        if(this.getResult() == null) {
-            this.setResult(this.computeResultInternal());
+        if (this.getResult() == null) {
+
+            NodeComputingResult r = this.computeResultInternal();
+
+            //this.setResult(new NodeComputingResult(Bit.Zero, Bit.Zero));
+            this.setResult(r);
         }
 
         return this.getResult();

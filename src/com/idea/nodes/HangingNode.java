@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 //Green node
-public class HangingNode extends Node{
+public class HangingNode extends Node {
 
 
     public HangingNode(MeshNodesV2 meshNodes, ExecutorService executor, int position, int parentPosition) {
