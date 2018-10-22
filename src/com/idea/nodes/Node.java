@@ -1,6 +1,7 @@
 package com.idea.nodes;
 
 import com.idea.arithmetic.Bit;
+import com.idea.binaryStringAdders.MeshNodesV2;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -9,20 +10,30 @@ import java.util.concurrent.Future;
 import static java.text.MessageFormat.format;
 
 public abstract class Node  {
-    private int stage;
     private int position;
-    private ExecutorService executor;
-    private Node rootParent;
-    private Node parent;
-    private Node prevParent;
     private NodeComputingResult result;
+    private ExecutorService executor;
+    private MeshNodesV2 meshNodes;
+    private int parentPosition;
+    private int prevParentPosition;
     private Bit a, b;
 
-    public Node(ExecutorService executor, int stage, int position){
+    public Node(MeshNodesV2 meshNodes, ExecutorService executor, int position, int parentPosition, int prevParentPosition){
+        this.meshNodes = meshNodes;
         this.executor = executor;
-        this.stage = stage;
         this.position = position;
+        this.parentPosition = parentPosition;
+        this.prevParentPosition = prevParentPosition;
     }
+
+    public Node(MeshNodesV2 meshNodes, ExecutorService executor, int position, int parentPosition){
+        this(meshNodes, executor, position, parentPosition, -1);
+    }
+
+    public Node(MeshNodesV2 meshNodes, ExecutorService executor, int position){
+        this(meshNodes, executor, position, -1, -1);
+    }
+
 
     private synchronized NodeComputingResult getComputedResult() throws ComputingException {
         if(this.getResult() == null) {
@@ -47,6 +58,12 @@ public abstract class Node  {
         return this.getClass().getName();
     }
 
+    public Node getParent() {
+        return this.meshNodes.getNodeByPosition(this.getParentPosition());
+    }
+
+    public Node getPrevParent() { return this.meshNodes.getNodeByPosition(this.prevParentPosition);}
+
 
     @Override
     public String toString(){
@@ -62,24 +79,8 @@ public abstract class Node  {
     }
 
     //Getters and setters
-    public int getStage() {
-        return stage;
-    }
-
     public int getPosition() {
         return position;
-    }
-
-    public Node getRootParent() {
-        return rootParent;
-    }
-
-    public Node getParent() {
-        return parent;
-    }
-
-    public Node getPrevParent() {
-        return prevParent;
     }
 
     public NodeComputingResult getResult() {
@@ -98,18 +99,6 @@ public abstract class Node  {
         return b;
     }
 
-    public void setRootParent(Node rootParent) {
-        this.rootParent = rootParent;
-    }
-
-    public void setParent(Node parent) {
-        this.parent = parent;
-    }
-
-    public void setPrevParent(Node prevParent) {
-        this.prevParent = prevParent;
-    }
-
     public void setA(Bit a) {
         this.a = a;
     }
@@ -119,4 +108,13 @@ public abstract class Node  {
     }
 
     protected ExecutorService getExecutorService() { return executor; }
+
+    public int getParentPosition() {
+        return parentPosition;
+    }
+
+    public int getPrevParentPosition() {
+        return prevParentPosition;
+    }
+
 }

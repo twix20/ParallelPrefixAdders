@@ -12,6 +12,12 @@ public class NodeComputingResult {
         this.generation = generation;
     }
 
+    public NodeComputingResult(Bit propagation, Bit generation, Bit sum){
+        this(propagation, generation);
+
+        this.sum = sum;
+    }
+
     public Bit getPropagation() {
         return propagation;
     }
@@ -22,9 +28,5 @@ public class NodeComputingResult {
 
     public Bit getSum() {
         return sum;
-    }
-
-    public void setSum(Bit sum) {
-        this.sum = sum;
     }
 }

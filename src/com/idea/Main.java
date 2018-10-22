@@ -1,9 +1,7 @@
 package com.idea;
 
 import com.idea.arithmetic.BinaryString;
-import com.idea.binaryStringAdders.KoggeStoneAdder;
-import com.idea.binaryStringAdders.LadnerFischerAdder;
-import com.idea.binaryStringAdders.SequentialAdder;
+import com.idea.binaryStringAdders.*;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,20 +11,27 @@ public class Main {
     public static void main(String[] args) {
         System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "30000");
 
-        BinaryString a = new BinaryString("001111111111000000000000000111111111111111111110000000000000000000000001111110000000111111");
-        BinaryString b = new BinaryString("0111111100000011111101011111010110000000000000000000000000000011111111111101011111111110001110");
+        BinaryString a = new BinaryString("1001");
+        BinaryString b = new BinaryString("1100");
 
         ExecutorService executorService = Executors.newFixedThreadPool(3000);
 
-        KoggeStoneAdder koggeStoneAdder = new KoggeStoneAdder(executorService);
-        LadnerFischerAdder ladnerFischerAdder = new LadnerFischerAdder(executorService);
-        SequentialAdder sequentialAdder = new SequentialAdder();
+        PrefixAdderSolver koggeStoneSolver = new PrefixAdderSolver(new KoggeStoneMeshNodes(executorService, a, b));
+        BinaryString result = koggeStoneSolver.add(a, b);
 
-        koggeStoneAdder.generateMesh(a, b);
-        ladnerFischerAdder.generateMesh(a, b);
+        System.out.println(result);
 
-        System.out.println(koggeStoneAdder.add(a, b));
-        System.out.println("after kogge: " + System.currentTimeMillis());
+
+
+        //KoggeStoneAdder koggeStoneAdder = new KoggeStoneAdder(executorService);
+        //LadnerFischerAdder ladnerFischerAdder = new LadnerFischerAdder(executorService);
+        //SequentialAdder sequentialAdder = new SequentialAdder();
+
+        //koggeStoneAdder.generateMesh(a, b);
+        //ladnerFischerAdder.generateMesh(a, b);
+
+        //System.out.println(koggeStoneAdder.add(a, b));
+        //System.out.println("after kogge: " + System.currentTimeMillis());
 //        System.out.println(ladnerFischerAdder.add(a, b));
 //        System.out.println(System.currentTimeMillis());
 //        System.out.println(sequentialAdder.add(a, b));

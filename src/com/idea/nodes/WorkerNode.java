@@ -2,6 +2,7 @@ package com.idea.nodes;
 
 import com.idea.arithmetic.Bit;
 import com.idea.arithmetic.BitCalculator;
+import com.idea.binaryStringAdders.MeshNodesV2;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -9,8 +10,9 @@ import java.util.concurrent.Future;
 //Yellow circle
 public class WorkerNode extends Node {
 
-    public WorkerNode(ExecutorService executorService, int stage, int position) {
-        super(executorService, stage, position);
+
+    public WorkerNode(MeshNodesV2 meshNodes, ExecutorService executor, int position, int parentPosition, int prevParentPosition) {
+        super(meshNodes, executor, position, parentPosition, prevParentPosition);
     }
 
     @Override

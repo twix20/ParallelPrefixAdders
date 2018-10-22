@@ -1,13 +1,16 @@
 package com.idea.nodes;
 
+import com.idea.binaryStringAdders.MeshNodesV2;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 //Green node
 public class HangingNode extends Node{
 
-    public HangingNode(ExecutorService executorService, int stage, int position) {
-        super(executorService, stage, position);
+
+    public HangingNode(MeshNodesV2 meshNodes, ExecutorService executor, int position, int parentPosition) {
+        super(meshNodes, executor, position, parentPosition);
     }
 
     @Override
