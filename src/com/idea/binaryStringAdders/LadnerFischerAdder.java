@@ -15,7 +15,7 @@ public class LadnerFischerAdder extends PrefixAdderBase {
         int depth = meshNodes.getDepth();
 
         if(stage <= depth && gapSize <= position % (gapSize*2)){ // Create Yellow Circles
-            int prevParentPosition = parent.getPosition() - (position % gapSize) - 1;
+            int prevParentPosition = parent.position - (position % gapSize) - 1;
             Node prevParent = meshNodes.getNodeByPosition(prevParentPosition);
 
             addWorkerNode(stage, globalPosition, parent, prevParent);

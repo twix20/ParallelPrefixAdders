@@ -20,7 +20,6 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
         this.executorService = executorService;
     }
 
-
     public abstract void insertNodeByPosition(int globalPosition, int position, int stage, int gapSize, Node parent);
 
     public BinaryString add(BinaryString a, BinaryString b){
@@ -30,19 +29,14 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
         // Get result nodes
         List<ResultNode> allResultNodes = meshNodes.getResultMeshNodes();
 
-        // Get final result futures
-        List<Future<NodeComputingResult>> futures = allResultNodes.stream().map(ResultNode::computeResult).collect(Collectors.toList());
+        String r = "";
+        //for(ResultNode resultNode : allResultNodes){
+        //    Character c = resultNode.getSum() ? '1' : '0';
+//
+//            r = c + r;
+//        }
 
-        // TODO Provide input data to stage 0 nodes
-
-        String result = futures.stream()
-                .map(this::getFutureResultUncheckException)
-                .map(NodeComputingResult::getSum)
-                .map(Bit::getValue)
-                .map(bigInt -> bigInt.toString())
-                .collect(supplyReversingCollector());
-
-        return new BinaryString(result);
+        return new BinaryString(r);
     }
 
     private <T> T getFutureResultUncheckException(Future<T> future) {
@@ -107,24 +101,24 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
 
     protected void addInitialNode(int stage, int pos, Bit aBit, Bit bBit){
         Node nodeToInsert = new InitialNode(executorService, stage, pos);
-        nodeToInsert.setA(aBit);
-        nodeToInsert.setB(bBit);
-        nodeToInsert.setRootParent(nodeToInsert);
+        nodeToInsert.a = aBit == Bit.One;
+        nodeToInsert.b = bBit == Bit.One;
+        nodeToInsert.rootParent = nodeToInsert;
 
         meshNodes.insertNode(nodeToInsert);
     }
     protected void addWorkerNode(int stage, int pos, Node parent, Node prevParent){
         Node nodeToInsert = new WorkerNode(executorService, stage, pos);
-        nodeToInsert.setRootParent(parent.getRootParent());
-        nodeToInsert.setParent(parent);
-        nodeToInsert.setPrevParent(prevParent);
+        nodeToInsert.rootParent = parent.rootParent;
+        nodeToInsert.parent = parent;
+        nodeToInsert.prevParent = prevParent;
 
         meshNodes.insertNode(nodeToInsert);
     }
     protected void addHangingNode(int stage, int pos, Node parent){
         Node nodeToInsert = new HangingNode(executorService, stage, pos);
-        nodeToInsert.setRootParent(parent.getRootParent());
-        nodeToInsert.setParent(parent);
+        nodeToInsert.rootParent = parent.rootParent;
+        nodeToInsert.parent = parent;
 
         meshNodes.insertNode(nodeToInsert);
     }
@@ -133,8 +127,8 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
         ResultNode prevResultNode = prevNode instanceof ResultNode ? (ResultNode)prevNode : ResultNode.FAKE_NODE;
 
         Node nodeToInsert = new ResultNode(executorService, stage, pos, prevResultNode);
-        nodeToInsert.setRootParent(parent.getRootParent());
-        nodeToInsert.setParent(parent);
+        nodeToInsert.rootParent = parent.rootParent;
+        nodeToInsert.parent = parent;
 
         meshNodes.insertNode(nodeToInsert);
     }

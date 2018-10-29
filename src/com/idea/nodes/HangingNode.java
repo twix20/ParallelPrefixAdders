@@ -1,5 +1,6 @@
 package com.idea.nodes;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -11,15 +12,12 @@ public class HangingNode extends Node{
     }
 
     @Override
-    protected NodeComputingResult computeResultInternal() throws ComputingException {
-        Future<NodeComputingResult> parentResultFuture = getParent().computeResult();
-        try {
-            NodeComputingResult parentResult = parentResultFuture.get();
-            return new NodeComputingResult(parentResult.getPropagation(), parentResult.getGeneration());
-        } catch (Exception e) {
-            throw new ComputingException(e);
-        }
-
+    public boolean getPropagation() {
+        return parent.getPropagation();
     }
 
+    @Override
+    public boolean getGeneration() {
+        return parent.getGeneration();
+    }
 }

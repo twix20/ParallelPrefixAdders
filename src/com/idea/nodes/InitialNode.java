@@ -13,16 +13,12 @@ public class InitialNode extends Node{
     }
 
     @Override
-    protected NodeComputingResult computeResultInternal() {
-
-        // TODO Get real input data not "1" and "1"
-
-        Bit propagation = BitCalculator.xor(Bit.One, Bit.One);
-        Bit generation = BitCalculator.and(Bit.One, Bit.One);
-
-        System.out.println("start: " + System.currentTimeMillis());
-
-        return new NodeComputingResult(propagation, generation);
+    public boolean getPropagation() {
+        return a ^ b;
     }
 
+    @Override
+    public boolean getGeneration() {
+        return a & b;
+    }
 }

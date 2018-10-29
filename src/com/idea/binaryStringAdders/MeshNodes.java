@@ -8,14 +8,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class MeshNodes {
     private int depth, longerLength;
 
     // Position, Node
-    protected Map<Integer, Node> meshByPosition = new HashMap<>();
-    protected Map<Integer, List<Node>> meshByStage = new HashMap<>();
+    protected ConcurrentHashMap<Integer, Node> meshByPosition = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<Integer, List<Node>> meshByStage = new ConcurrentHashMap<>();
 
     public MeshNodes(BinaryString sA, BinaryString sB){
         depth = calculateMeshDepth(sA, sB);
@@ -25,9 +26,9 @@ public class MeshNodes {
     }
 
     public void insertNode(Node n){
-        meshByPosition.put(n.getPosition(), n);
+        meshByPosition.put(n.position, n);
 
-        int stage = n.getStage();
+        int stage = n.stage;
         List<Node> nodesByStage = meshByStage.get(stage);
         nodesByStage.add(n);
     }

@@ -14,46 +14,34 @@ public class ResultNode extends Node {
     public static ResultNode FAKE_NODE;
     static {
        FAKE_NODE = new ResultNode(Executors.newSingleThreadExecutor(), -1, -1, null);
-       FAKE_NODE.setResult(new NodeComputingResult(Bit.Zero, Bit.Zero));
     }
 
-    public ResultNode(ExecutorService executorService, int stage, int postion, ResultNode prevParent) {
-        super(executorService, stage, postion);
+    public boolean getSum(){
+        boolean prevCarry = ((ResultNode)prevParent).getCarry();
 
-        this.setPrevParent(prevParent);
+        return prevCarry ^ rootParent.getPropagation();
     }
 
-    @Override
-    protected NodeComputingResult computeResultInternal() throws ComputingException {
-        Future<NodeComputingResult> previousParentFuture = getPrevParent().computeResult();
-        Future<NodeComputingResult> rootParentFuture = getRootParent().computeResult();
-        Future<NodeComputingResult> parentFuture = getParent().computeResult();
+    public boolean getCarry() {
+        if(stage == -1)
+            return  false;
 
-        try {
-            Bit previousCarry = previousParentFuture.get().getGeneration();
-            Bit rootParentPropagation = rootParentFuture.get().getPropagation();
-            Bit sum = BitCalculator.xor(rootParentPropagation, previousCarry);
-
-            NodeComputingResult result = new NodeComputingResult(Bit.Zero, parentFuture.get().getGeneration());
-            result.setSum(sum);
-
-            return result;
-        } catch (Exception e) {
-            throw new ComputingException(e);
-        }
-
+        return getGeneration();
     }
 
     @Override
-    public String toString(){
-        int prevParentPositionIfExists = getPrevParent() == null ? -1 : getPrevParent().getPosition();
-
-        return String.format("|{%1$d}{%2$d} C:%3$s S:%4$s T:%5$s| ",
-                getPosition(),
-                prevParentPositionIfExists,
-                getResult().getGeneration(),
-                getResult().getSum(),
-                getNodeName());
+    public boolean getPropagation() {
+        return false;
     }
 
+    @Override
+    public boolean getGeneration() {
+        return parent.getGeneration();
+    }
+
+    public ResultNode(ExecutorService executorService, int stage, int position, ResultNode prevParent) {
+        super(executorService, stage, position);
+
+        this.prevParent = prevParent;
+    }
 }
