@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class PrefixAdderBase implements IBinaryStringAdder {
     protected MeshNodes meshNodes;
@@ -22,6 +23,7 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
 
     public abstract void insertNodeByPosition(int globalPosition, int position, int stage, int gapSize, Node parent);
 
+
     public BinaryString add(BinaryString a, BinaryString b){
         if(meshNodes == null)
             generateMesh(a, b);
@@ -30,11 +32,12 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
         List<ResultNode> allResultNodes = meshNodes.getResultMeshNodes();
 
         String r = "";
-        //for(ResultNode resultNode : allResultNodes){
-        //    Character c = resultNode.getSum() ? '1' : '0';
-//
-//            r = c + r;
-//        }
+
+        r = allResultNodes
+                .stream()
+                .parallel()
+                .map(resultNode -> resultNode.getSum() ? "1" : "0")
+                .reduce("", (acc, s) -> s + acc);
 
         return new BinaryString(r);
     }
