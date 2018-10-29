@@ -7,6 +7,7 @@ import com.idea.nodes.*;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
     private ExecutorService executorService;
 
     public PrefixAdderBase(ExecutorService executorService) {
+
         this.executorService = executorService;
     }
 
@@ -30,14 +32,24 @@ public abstract class PrefixAdderBase implements IBinaryStringAdder {
 
         // Get result nodes
         List<ResultNode> allResultNodes = meshNodes.getResultMeshNodes();
-
         String r = "";
 
-        r = allResultNodes
-                .stream()
-                .parallel()
-                .map(resultNode -> resultNode.getSum() ? "1" : "0")
-                .reduce("", (acc, s) -> s + acc);
+
+        try{
+            //r = allResultNodes
+            //        .parallelStream()
+            //        .map(resultNode -> resultNode.getSum() ? "1" : "0")
+            //        .reduce("", (acc, s) -> s + acc);
+
+            r = executorService.submit(
+                    () -> allResultNodes
+                            .parallelStream()
+                            .map(resultNode -> resultNode.getSum() ? "1" : "0")
+                            .reduce("", (acc, s) -> s + acc)).get();
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
 
         return new BinaryString(r);
     }
